@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>مصروفي | لوحة التحكم</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+
+      <img
+        src="MASROUFY-logo-transparent.png"
+        alt="مصروفي"
+      >
+
+    </div>
+
+    <nav>
+
+      <button
+        class="nav-link active"
+        data-section="dashboard"
+      >
+        ⌂
+        <span>لوحة التحكم</span>
+      </button>
+
+      <button
+        class="nav-link"
+        data-section="transactions"
+      >
+        ↔
+        <span>المعاملات</span>
+      </button>
+
+      <button
+        class="nav-link"
+        data-section="budgets"
+      >
+        ◫
+        <span>الميزانيات</span>
+      </button>
+
+      <button
+        class="nav-link"
+        data-section="categories"
+      >
+        ◉
+        <span>التصنيفات</span>
+      </button>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+      <button
+        class="side-btn"
+        id="exportBtn"
+      >
+        ⇩ تصدير البيانات
+      </button>
+
+      <button
+        class="side-btn danger"
+        id="logoutBtn"
+      >
+        ↪ تسجيل الخروج
+      </button>
+
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div>
+
+        <p class="welcome">
+          أهلاً بيك يا
+          <strong id="welcomeName"></strong>
+          👋
+        </p>
+
+        <h1 id="pageTitle">
+          لوحة التحكم
+        </h1>
+
+        <p
+          class="proverb"
+          id="dailyProverb"
+        ></p>
+
+      </div>
+
+      <div class="top-actions">
+
+        <input
+          type="month"
+          id="monthPicker"
+        >
+
+        <button
+          class="mobile-menu"
+          id="mobileMenu"
+        >
+          ☰
+        </button>
+
+      </div>
+
+    </header>
+
+    <!-- Dashboard -->
+
+    <section
+      id="dashboard"
+      class="section active"
+    >
+
+      <div class="stats-grid">
+
+        <article class="stat-card">
+          <span>الرصيد الحالي</span>
+          <strong id="totalBalance">
+            0 ج.م
+          </strong>
+        </article>
+
+        <article class="stat-card">
+          <span>إجمالي الدخل</span>
+          <strong id="totalIncome">
+            0 ج.م
+          </strong>
+        </article>
+
+        <article class="stat-card">
+          <span>إجمالي المصروفات</span>
+          <strong id="totalExpense">
+            0 ج.م
+          </strong>
+        </article>
+
+        <article class="stat-card">
+          <span>صافي التوفير</span>
+          <strong id="netSavings">
+            0 ج.م
+          </strong>
+        </article>
+
+        <article class="stat-card">
+          <span>التغير عن الشهر السابق</span>
+          <strong id="growthRate">
+            0%
+          </strong>
+        </article>
+
+      </div>
+
+      <div class="chart-grid">
+
+        <article class="panel">
+
+          <div class="panel-head">
+
+            <h2>
+              التدفق النقدي
+            </h2>
+
+            <span>
+              آخر 6 شهور
+            </span>
+
+          </div>
+
+          <canvas id="cashFlowChart"></canvas>
+
+        </article>
+
+        <article class="panel">
+
+          <div class="panel-head">
+
+            <h2>
+              توزيع المصروفات
+            </h2>
+
+            <span id="expenseMonthLabel"></span>
+
+          </div>
+
+          <canvas id="expenseChart"></canvas>
+
+        </article>
+
+      </div>
+
+      <div class="content-grid">
+
+        <article class="panel">
+
+          <div class="panel-head">
+
+            <h2>
+              آخر المعاملات
+            </h2>
+
+            <button
+              class="small-btn"
+              id="quickAddBtn"
+            >
+              + إضافة
+            </button>
+
+          </div>
+
+          <div
+            id="recentTransactions"
+            class="transaction-list"
+          ></div>
+
+        </article>
+
+        <article class="panel">
+
+          <div class="panel-head">
+
+            <h2>
+              الميزانيات
+            </h2>
+
+          </div>
+
+          <div id="dashboardBudgets"></div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- Transactions -->
+
+    <section
+      id="transactions"
+      class="section"
+    >
+
+      <div class="section-head">
+
+        <div>
+
+          <h2>
+            المعاملات
+          </h2>
+
+          <p>
+            كل عمليات الدخل والمصروفات الخاصة بيك.
+          </p>
+
+        </div>
+
+        <button
+          class="primary-btn"
+          id="addTransactionBtn"
+        >
+          + معاملة جديدة
+        </button>
+
+      </div>
+
+      <div class="filters panel">
+
+        <input
+          id="searchInput"
+          placeholder="ابحث في المعاملات..."
+        >
+
+        <select id="typeFilter">
+
+          <option value="all">
+            الكل
+          </option>
+
+          <option value="income">
+            دخل
+          </option>
+
+          <option value="expense">
+            مصروف
+          </option>
+
+        </select>
+
+        <select id="categoryFilter">
+
+          <option value="all">
+            كل التصنيفات
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="panel table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>التاريخ</th>
+              <th>الوصف</th>
+              <th>التصنيف</th>
+              <th>الحساب</th>
+              <th>المبلغ</th>
+              <th></th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="transactionsTable"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+    <!-- Budgets -->
+
+    <section
+      id="budgets"
+      class="section"
+    >
+
+      <div class="section-head">
+
+        <div>
+
+          <h2>
+            الميزانيات
+          </h2>
+
+          <p>
+            حدد حدًا شهريًا لكل تصنيف.
+          </p>
+
+        </div>
+
+        <button
+          class="primary-btn"
+          id="addBudgetBtn"
+        >
+          + ميزانية جديدة
+        </button>
+
+      </div>
+
+      <div
+        id="budgetsGrid"
+        class="budget-grid"
+      ></div>
+
+    </section>
+
+    <!-- Categories -->
+
+    <section
+      id="categories"
+      class="section"
+    >
+
+      <div class="section-head">
+
+        <div>
+
+          <h2>
+            التصنيفات
+          </h2>
+
+          <p>
+            خصص التصنيفات على حسب استخدامك.
+          </p>
+
+        </div>
+
+        <button
+          class="primary-btn"
+          id="addCategoryBtn"
+        >
+          + تصنيف جديد
+        </button>
+
+      </div>
+
+      <div class="category-columns">
+
+        <div class="panel">
+
+          <h3>
+            مصروفات
+          </h3>
+
+          <div id="expenseCategories"></div>
+
+        </div>
+
+        <div class="panel">
+
+          <h3>
+            دخل
+          </h3>
+
+          <div id="incomeCategories"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<!-- Transaction Modal -->
+
+<div
+  class="modal"
+  id="transactionModal"
+>
+
+  <div class="modal-card">
+
+    <button
+      class="close"
+      data-close="transactionModal"
+    >
+      ×
+    </button>
+
+    <h2>
+      إضافة معاملة
+    </h2>
+
+    <form id="transactionForm">
+
+      <div class="form-grid">
+
+        <div>
+
+          <label>
+            المبلغ
+          </label>
+
+          <input
+            id="transactionAmount"
+            type="number"
+            min="0.01"
+            step="0.01"
+            required
+          >
+
+        </div>
+
+        <div>
+
+          <label>
+            النوع
+          </label>
+
+          <select id="transactionType">
+
+            <option value="expense">
+              مصروف
+            </option>
+
+            <option value="income">
+              دخل
+            </option>
+
+          </select>
+
+        </div>
+
+        <div>
+
+          <label>
+            التصنيف
+          </label>
+
+          <select
+            id="transactionCategory"
+            required
+          ></select>
+
+        </div>
+
+        <div>
+
+          <label>
+            التاريخ
+          </label>
+
+          <input
+            id="transactionDate"
+            type="date"
+            required
+          >
+
+        </div>
+
+        <div>
+
+          <label>
+            الحساب / الطريقة
+          </label>
+
+          <select id="transactionAccount">
+
+            <option>
+              Cash
+            </option>
+
+            <option>
+              Bank
+            </option>
+
+            <option>
+              Wallet
+            </option>
+
+            <option>
+              Card
+            </option>
+
+          </select>
+
+        </div>
+
+        <div>
+
+          <label>
+            الوصف
+          </label>
+
+          <input
+            id="transactionNote"
+            maxlength="100"
+            placeholder="مثلاً: أكل أو مواصلات"
+          >
+
+        </div>
+
+      </div>
+
+      <button
+        class="primary-btn"
+        type="submit"
+      >
+        حفظ المعاملة
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- Budget Modal -->
+
+<div
+  class="modal"
+  id="budgetModal"
+>
+
+  <div class="modal-card">
+
+    <button
+      class="close"
+      data-close="budgetModal"
+    >
+      ×
+    </button>
+
+    <h2>
+      إضافة ميزانية
+    </h2>
+
+    <form id="budgetForm">
+
+      <label>
+        التصنيف
+      </label>
+
+      <select
+        id="budgetCategory"
+        required
+      ></select>
+
+      <label>
+        الحد الشهري
+      </label>
+
+      <input
+        id="budgetLimit"
+        type="number"
+        min="1"
+        step="0.01"
+        required
+      >
+
+      <button
+        class="primary-btn"
+        type="submit"
+      >
+        حفظ الميزانية
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+<!-- Category Modal -->
+
+<div
+  class="modal"
+  id="categoryModal"
+>
+
+  <div class="modal-card">
+
+    <button
+      class="close"
+      data-close="categoryModal"
+    >
+      ×
+    </button>
+
+    <h2>
+      تصنيف جديد
+    </h2>
+
+    <form id="categoryForm">
+
+      <label>
+        اسم التصنيف
+      </label>
+
+      <input
+        id="categoryName"
+        maxlength="30"
+        required
+      >
+
+      <label>
+        النوع
+      </label>
+
+      <select id="categoryType">
+
+        <option value="expense">
+          مصروف
+        </option>
+
+        <option value="income">
+          دخل
+        </option>
+
+      </select>
+
+      <button
+        class="primary-btn"
+        type="submit"
+      >
+        إضافة التصنيف
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+
+</body>
+
+</html>
